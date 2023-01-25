@@ -13,8 +13,12 @@ def load_lottie(url):
 
 
 # ~~~~~ WRITE DATA TO EXCEL ~~~~~
-def write_excel():
-    df.to_excel('data/inventory.xlsx', sheet_name="Inventory")
+def write_excel(condition):
+    if condition == "main":
+        df.to_excel('data/inventory.xlsx', sheet_name="Inventory")
+    elif condition == "backup":
+        df.to_excel('data/backup/inventory_backup.xlsx', sheet_name="Inventory")
+        st.success("Successfully pushed current table to backup.")
 
 
 # ~~~~~~~~~~~~~~~~~~~~ PAGE START ~~~~~~~~~~~~~~~~~~~~
@@ -79,7 +83,7 @@ with st.expander(label="Buy/Sell Stock", expanded=True):
                     df.loc[0, 'Items Purchased'] = df.loc[0, 'Items Purchased'] + amount  # add amount to units purchased
                     df.loc[0, 'Total Profit'] = df.loc[0, 'Total Profit'] - (df.loc[i, 'Cost per Unit'] * amount)  # detract from total profit
                     st.success("Successfully purchased " + str(amount) + " " + selected_item + "s for R" + str(df.loc[i, 'Cost per Unit'] * amount) + ".")
-                    write_excel()
+                    write_excel("main")
                 else:  # else show error.
                     st.error("Insufficient balance for this purchase.")
             elif status == "Selling":
@@ -87,11 +91,11 @@ with st.expander(label="Buy/Sell Stock", expanded=True):
                     df.loc[i, 'Total Cost'] = df.loc[i, 'Total Cost'] - (df.loc[i, 'Cost per Unit'] * amount)  # updates TOTAL COST
                     df.loc[i, 'Total Stock'] = df.loc[i, 'Total Stock'] - amount  # updates TOTAL STOCK
                     df.loc[i, 'Total Sell Price'] = df.loc[i, 'Total Sell Price'] - (amount * df.loc[i, 'Sell Price per Unit'])  # update total sell price of all stock
-                    df.loc[0, 'Balance'] = df.loc[0, 'Balance'] + (df.loc[i, 'Cost per Unit'] * amount)  # update TOTAL BALANCE (add selling price)
+                    df.loc[0, 'Balance'] = df.loc[0, 'Balance'] + (df.loc[i, 'Sell Price per Unit'] * amount)  # update TOTAL BALANCE (add selling price)
                     df.loc[0, 'Items Sold'] = df.loc[0, 'Items Sold'] + amount  # add amount to units purchased
-                    df.loc[0, 'Total Profit'] = df.loc[0, 'Total Profit'] + (df.loc[i, 'Cost per Unit'] * amount)  # detract from total profit
-                    st.success("Successfully sold " + str(amount) + " " + selected_item + "s for R" + str(df.loc[i, 'Cost per Unit'] * amount) + ".")
-                    write_excel()
+                    df.loc[0, 'Total Profit'] = df.loc[0, 'Total Profit'] + (df.loc[i, 'Sell Price per Unit'] * amount)  # increase total profit
+                    st.success("Successfully sold " + str(amount) + " " + selected_item + "s for R" + str(df.loc[i, 'Sell Price per Unit'] * amount) + ".")
+                    write_excel("main")
                 else:
                     st.error("Can't sell more stock than exists in inventory.")
 
@@ -104,6 +108,8 @@ with st.expander(label="Buy/Sell Stock", expanded=True):
 with st.expander(label="Expand Table", expanded=True):
     dfShow = pd.read_excel(io='data/inventory.xlsx', engine='openpyxl', sheet_name='Inventory', usecols='B:G')
     st.dataframe(dfShow, use_container_width=True)
+    if st.button("Push main table to backup"):
+        write_excel("backup")
 
 
 
