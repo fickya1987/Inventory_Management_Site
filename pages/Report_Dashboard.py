@@ -29,9 +29,28 @@ with col2:
 st.write("---")
 
 with st.container():
-    st.subheader("Filter values:")
+    col1, col2, col3 = st.columns([1, 1, 1])
+
     name = st.multiselect(
         "Select by item:",
         options=df["Name"].unique(),
         default=df["Name"].unique()
     )
+
+    df_name = df.query("Name==@name")
+
+    with col2:
+        st.markdown("<h3 style='text-align: center;'>Current Stock</h3>", unsafe_allow_html=True)
+
+    with col1:
+        st.write("##")
+        st.plotly_chart(px.pie(
+            df_name,
+            values="Total Stock",
+            names="Name",
+            #x="Name",
+            #y="Total Stock",
+            #orientation="v",
+            template="plotly_dark"
+        ))
+
