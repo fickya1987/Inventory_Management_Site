@@ -22,7 +22,7 @@ def write_excel():
 # READ CSV FILE
 df = pd.read_excel(io='data/inventory.xlsx', engine='openpyxl', sheet_name='Inventory', usecols='B:K')
 
-col1, col2, col3 = st.columns([1, 2, 1])
+col1, col2, col3 = st.columns([1, 3, 1])
 
 
 # MIDDLE COLUMN, TO ALIGN IMAGE MIDDLE

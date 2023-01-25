@@ -18,17 +18,17 @@ def load_lottie(url):
 # READ CSV FILE
 df = pd.read_excel(io='data/inventory.xlsx', engine='openpyxl', sheet_name='Inventory', usecols='B:K')
 
-col1, col2, col3 = st.columns([1, 2, 1])
+col1, col2, col3 = st.columns([1, 3, 1])
 
 
 # MIDDLE COLUMN, TO ALIGN IMAGE MIDDLE
 with col2:
     st_lottie(load_lottie("https://assets8.lottiefiles.com/packages/lf20_qpsnmykx.json"), height=300, key="coding")
     st.markdown("<h1 style='text-align: center;'>Dashboard</h1>", unsafe_allow_html=True)
-    st.write("---")
 
+st.write("---")
 
-with st.container:
+with st.container():
     st.subheader("Filter values:")
     name = st.multiselect(
         "Select by item:",
