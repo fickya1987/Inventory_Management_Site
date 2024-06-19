@@ -3,3 +3,4 @@ streamlit-lottie
 pandas
 plotly
 plotly-express
+openpyxl
