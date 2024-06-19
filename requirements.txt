@@ -2,3 +2,4 @@ streamlit
 streamlit-lottie
 pandas
 plotly
+plotly-express
